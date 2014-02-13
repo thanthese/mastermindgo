@@ -30,6 +30,9 @@ There are 18 optimal guesses: gddplp grrbbl dgdlpp rrgbbl rgrlbb dgdplp rrglbb
 rgrbbl ddgppl ddglpp rrgblb gddppl ddgplp rgrblb dgdppl grrlbb grrblb gddlpp
 ```
 
+I'm using `b`, `d`, `g`, `l`, `p`, `r`, and `y` for `blue`, `dark`, `green`,
+`light`, `purple`, `red`, and `yellow`.
+
 The `nextGuesses()` func is a beautiful opportunity for some go-style
 concurrency/parallelism magic... but I haven't done that yet. So far waiting
 has been fine, and anyway this go version beats the pants off the python
