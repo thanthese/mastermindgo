@@ -202,10 +202,13 @@ func (g *game) nextGuesses() (allOptimal []chars) {
 func main() {
 
 	// setup the game we'll analyze
-	var g = game{
+	g := game{
 		colors: chars("bdglpry"),
 		slots:  6,
-		rounds: []round{}}
+		rounds: []round{
+			round{chars("bbbddd"), 0, 1},
+			round{chars("ggglll"), 2, 1},
+			round{chars("ppprrr"), 0, 2}}}
 
 	allOptimal := g.nextGuesses()
 	fmt.Printf("\nThere are %d optimal guesses: ", len(allOptimal))
