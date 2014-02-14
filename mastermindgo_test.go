@@ -37,6 +37,31 @@ func TestCalcPips(t *testing.T) {
 	}
 }
 
+// run benchmarks with `go test -bench .`
+func BenchmarkCalcPips(b *testing.B) {
+	tests := []struct{ code, guess chars }{
+		{chars("bbbbaa"), chars("ggggaa")},
+		{chars("bbbgaa"), chars("gggyaa")},
+		{chars("ggbbaa"), chars("yyggaa")},
+		{chars("brygaa"), chars("rbgsaa")},
+		{chars("brygaa"), chars("gbryaa")},
+		{chars("bbbbaa"), chars("bgggaa")},
+		{chars("bbbyaa"), chars("byrraa")},
+		{chars("bbryaa"), chars("brysaa")},
+		{chars("brsyaa"), chars("rsbyaa")},
+		{chars("bbbbaa"), chars("bbggaa")},
+		{chars("bbbgaa"), chars("bbgyaa")},
+		{chars("bbryaa"), chars("bbyraa")},
+		{chars("bbbsaa"), chars("bbbyaa")},
+		{chars("brysaa"), chars("brysaa")}}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for _, c := range tests {
+			calcPips(c.code, c.guess)
+		}
+	}
+}
+
 func TestIndexOf(t *testing.T) {
 	type test struct {
 		str      string
