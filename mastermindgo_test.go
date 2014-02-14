@@ -27,7 +27,7 @@ func TestCalcPips(t *testing.T) {
 		test{"brys", "brys", 4, 0}}
 
 	for _, tc := range testCases {
-		b, w := calcPips(chars(tc.code), chars(tc.guess))
+		b, w := calcPips([]byte(tc.code), []byte(tc.guess))
 		if b != tc.black || w != tc.white {
 			t.Errorf("Failed calcPips(\"%s\", \"%s\"). Expected (%d, %d), got (%d, %d).",
 				tc.code, tc.guess,
@@ -39,21 +39,21 @@ func TestCalcPips(t *testing.T) {
 
 // run benchmarks with `go test -bench .`
 func BenchmarkCalcPips(b *testing.B) {
-	tests := []struct{ code, guess chars }{
-		{chars("bbbbaa"), chars("ggggaa")},
-		{chars("bbbgaa"), chars("gggyaa")},
-		{chars("ggbbaa"), chars("yyggaa")},
-		{chars("brygaa"), chars("rbgsaa")},
-		{chars("brygaa"), chars("gbryaa")},
-		{chars("bbbbaa"), chars("bgggaa")},
-		{chars("bbbyaa"), chars("byrraa")},
-		{chars("bbryaa"), chars("brysaa")},
-		{chars("brsyaa"), chars("rsbyaa")},
-		{chars("bbbbaa"), chars("bbggaa")},
-		{chars("bbbgaa"), chars("bbgyaa")},
-		{chars("bbryaa"), chars("bbyraa")},
-		{chars("bbbsaa"), chars("bbbyaa")},
-		{chars("brysaa"), chars("brysaa")}}
+	tests := []struct{ code, guess []byte }{
+		{[]byte("bbbbaa"), []byte("ggggaa")},
+		{[]byte("bbbgaa"), []byte("gggyaa")},
+		{[]byte("ggbbaa"), []byte("yyggaa")},
+		{[]byte("brygaa"), []byte("rbgsaa")},
+		{[]byte("brygaa"), []byte("gbryaa")},
+		{[]byte("bbbbaa"), []byte("bgggaa")},
+		{[]byte("bbbyaa"), []byte("byrraa")},
+		{[]byte("bbryaa"), []byte("brysaa")},
+		{[]byte("brsyaa"), []byte("rsbyaa")},
+		{[]byte("bbbbaa"), []byte("bbggaa")},
+		{[]byte("bbbgaa"), []byte("bbgyaa")},
+		{[]byte("bbryaa"), []byte("bbyraa")},
+		{[]byte("bbbsaa"), []byte("bbbyaa")},
+		{[]byte("brysaa"), []byte("brysaa")}}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for _, c := range tests {
@@ -76,7 +76,7 @@ func TestIndexOf(t *testing.T) {
 		test{"12345", "z", -1}}
 
 	for _, tc := range testCases {
-		if pos := indexOf(chars(tc.str), []byte(tc.val)[0]); pos != tc.position {
+		if pos := indexOf([]byte(tc.str), []byte(tc.val)[0]); pos != tc.position {
 			t.Errorf("Failed indexOf(\"%s\", \"%s\"). Expected %d, got %d.",
 				tc.str, tc.val, tc.position, pos)
 		}

@@ -5,78 +5,23 @@ package main
 
 import (
 	"fmt"
-	"math"
+	"github.com/thanthese/mastermind/product"
 )
 
-// types{{{
-
-// I'm representing sequences of colors -- "bbdd" -- as slices of bytes.
-// Apparently you're supposed to use strings for this, even to represent chars.
-// Well, I got neck-deep in before I learned that, and I don't want to fix it
-// now. Besides, I don't think it matters in this case because I know I'll only
-// ever be using letters from the alphabet.
-type chars []byte
-
 type round struct {
-	guess chars
+	guess []byte
 	black int
 	white int
 }
 
 type game struct {
-	colors chars
+	colors []byte
 	slots  int
 	rounds []round
 }
 
-// }}}
-// product{{{
-
-// all possible combinations, given colors list and length of string
-func product(colors chars, length int) []chars {
-
-	// how many of these are we going to make?
-	comboCount := int(math.Pow(float64(len(colors)), float64(length)))
-
-	// initialize slice to return
-	ret := make([]chars, comboCount)
-	for i := 0; i < comboCount; i++ {
-		ret[i] = make(chars, length)
-	}
-
-	incEvery := 1
-	comboIndex := 0 // index of invisible for-loop
-
-	// build up answer place by place
-	for place := length - 1; place >= 0; place-- {
-	NextPlace:
-		// repeat through all combos
-		for {
-			// for each char...
-			for _, char := range colors {
-				// ...repeat it incEvery times
-				for r := 0; r < incEvery; r++ {
-
-					ret[comboIndex][place] = char
-
-					comboIndex++
-					if comboIndex == comboCount {
-						break NextPlace
-					}
-				}
-			}
-		}
-
-		comboIndex = 0
-		incEvery *= len(colors)
-	}
-	return ret
-}
-
-// }}}
-
 // apparently go doesn't get a lib func for this
-func indexOf(ls chars, val byte) int {
+func indexOf(ls []byte, val byte) int {
 	for i, v := range ls {
 		if v == val {
 			return i
@@ -85,12 +30,12 @@ func indexOf(ls chars, val byte) int {
 	return -1
 }
 
-func calcPips(code, guess chars) (black, white int) {
+func calcPips(code, guess []byte) (black, white int) {
 
-	c := make(chars, len(code))
+	c := make([]byte, len(code))
 	copy(c, code)
 
-	g := make(chars, len(guess))
+	g := make([]byte, len(guess))
 	copy(g, guess)
 
 	for i := 0; i < len(c); i++ {
@@ -115,12 +60,12 @@ func calcPips(code, guess chars) (black, white int) {
 
 // Given the current game state, what codes are still possible? I think the
 // itermediate steps are interesting, so they're logged to the stdout.
-func (g *game) remainingCandidates() []chars {
-	candidates := product(g.colors, g.slots)
+func (g *game) remainingCandidates() [][]byte {
+	candidates := product.Product(g.colors, g.slots)
 	total := len(candidates)
 	for _, round := range g.rounds {
 
-		plausible := make([]chars, 0, len(candidates))
+		plausible := make([][]byte, 0, len(candidates))
 		for _, candidate := range candidates {
 			black, white := calcPips(round.guess, candidate)
 			if black == round.black && white == round.white {
@@ -152,7 +97,7 @@ func pipsHash(black, white int) int {
 
 // How well does a guess measure up against a pool of plausible candidates?
 // Lower score is better.
-func scoreGuess(guess chars, candidates []chars) int {
+func scoreGuess(guess []byte, candidates [][]byte) int {
 	pipsCount := map[int]int{}
 	max := -1
 	for _, code := range candidates {
@@ -172,10 +117,10 @@ func scoreGuess(guess chars, candidates []chars) int {
 
 // Answer the fundamental question of this program: given a game state, what
 // are the optimal guesses?
-func (g *game) nextGuesses() (allOptimal []chars) {
+func (g *game) nextGuesses() (allOptimal [][]byte) {
 
 	// sadly, product() is called twice; passing it seems sloppy, though
-	allCombos := product(g.colors, g.slots)
+	allCombos := product.Product(g.colors, g.slots)
 	candidates := g.remainingCandidates()
 
 	// score all possible guesses, and find best score
@@ -190,10 +135,10 @@ func (g *game) nextGuesses() (allOptimal []chars) {
 	}
 
 	// return all guesses that match the best score
-	ret := make([]chars, 0, len(guesses))
+	ret := make([][]byte, 0, len(guesses))
 	for guess, score := range guesses {
 		if score == minScore {
-			ret = append(ret, chars(guess))
+			ret = append(ret, []byte(guess))
 		}
 	}
 	return ret
@@ -203,12 +148,12 @@ func main() {
 
 	// setup the game we'll analyze
 	g := game{
-		colors: chars("bdglpry"),
+		colors: []byte("bdglpry"),
 		slots:  6,
 		rounds: []round{
-			round{chars("bbbddd"), 0, 1},
-			round{chars("ggglll"), 2, 1},
-			round{chars("ppprrr"), 0, 2}}}
+			round{[]byte("bbbddd"), 0, 1},
+			round{[]byte("ggglll"), 2, 1},
+			round{[]byte("ppprrr"), 0, 2}}}
 
 	allOptimal := g.nextGuesses()
 	fmt.Printf("\nThere are %d optimal guesses: ", len(allOptimal))
