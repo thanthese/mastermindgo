@@ -75,7 +75,7 @@ func (g *game) remainingCandidates() [][]byte {
 		candidates = plausible
 
 		// logging
-		fmt.Printf("After guess \"%s\" %d/%d (%.2f%%) combinations remain.\n",
+		fmt.Printf("After guess \"%s\" %6d/%d (%.2f%%) combinations remain.\n",
 			round.guess, len(candidates), total,
 			float64(len(candidates))/float64(total)*100.0)
 		if len(candidates) < 10 {
