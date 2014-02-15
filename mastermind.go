@@ -75,7 +75,7 @@ func (g *game) remainingCandidates() [][]byte {
 		candidates = plausible
 
 		// logging
-		fmt.Printf("After guess \"%s\" %6d/%d (%.2f%%) combinations remain.\n",
+		fmt.Printf("After guess \"%s\" %6d/%d (%5.2f%%) combinations remain.\n",
 			round.guess, len(candidates), total,
 			float64(len(candidates))/float64(total)*100.0)
 		if len(candidates) < 10 {
@@ -152,9 +152,8 @@ func main() {
 		colors: []byte("bdglpry"),
 		slots:  6,
 		rounds: []round{
-			round{[]byte("bbbddd"), 0, 1},
-			round{[]byte("ggglll"), 2, 1},
-			round{[]byte("ppprrr"), 0, 2}}}
+			round{[]byte("rrppdd"), 1, 1},
+			round{[]byte("yyyggg"), 2, 1}}}
 
 	allOptimal := g.nextGuesses()
 	fmt.Printf("\nThere are %d optimal guesses: ", len(allOptimal))
